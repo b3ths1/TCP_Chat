@@ -46,7 +46,7 @@ class Client
                 string message = Encoding.ASCII.GetString(buffer, 0, bytesRead); //обратно - превръща масива с байтове в string
                 Console.WriteLine(message); //съобщението излиза
             }
-            catch (Exception) //ако има грешки, да се прекъсне цикъла
+            catch (Exception) //ако има грешки/изключения, да се прекъсне цикъла
             {
                 break; 
             }
