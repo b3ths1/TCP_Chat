@@ -30,41 +30,41 @@ class Server
         TcpClient tcpClient = (TcpClient)obj;
         NetworkStream stream = tcpClient.GetStream(); //Network stream - за четене и запис на данни между сървъра и клиента
 
-        byte[] buffer = new byte[1024];
-        int bytesRead;
+        byte[] buffer = new byte[1024]; //инициализира се буфер, който запазва данните на съобщението
+        int bytesRead; //променлива, която следи за прочетените байтове
 
         while (true)
         {
             try
             {
-                bytesRead = stream.Read(buffer, 0, buffer.Length);
-                if (bytesRead == 0)
+                bytesRead = stream.Read(buffer, 0, buffer.Length); //чете данни в буфера и връща броя на прочетените байтове
+                if (bytesRead == 0) //ако няма прочетени байтове/съобщение, да се прекъсне цикъла
                 {
                     break;
                 }
 
-                string message = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-                Console.WriteLine($"Received: {message}");
+                string message = Encoding.ASCII.GetString(buffer, 0, bytesRead); //обратно - превръща масива с байтове в string
+                Console.WriteLine($"Received: {message}"); //показва полученото съобщение
 
-                BroadcastMessage(tcpClient, message);
+                BroadcastMessage(tcpClient, message); //показва съобщението на всички клиенти
             }
-            catch (Exception)
+            catch (Exception) //ако има грешки/изключения, да се прекъсне цикъла
             {
                 break;
             }
         }
 
-        clients.Remove(tcpClient);
-        tcpClient.Close();
+        clients.Remove(tcpClient); //маха клиентите от списъка при прекъсване на връзката/други грешки/изключения
+        tcpClient.Close(); //затваряне на връзката
     }
 
-    static void BroadcastMessage(TcpClient sender, string message)
+    static void BroadcastMessage(TcpClient sender, string message) //метода за broadcast=ване съобщение на всички клиенти, използван горе ↑
     {
-        byte[] broadcastBuffer = Encoding.ASCII.GetBytes(message);
+        byte[] broadcastBuffer = Encoding.ASCII.GetBytes(message); //превръща съобщението в масив от ASCII символи/с ASCII encoding
 
-        foreach (TcpClient client in clients)
+        foreach (TcpClient client in clients) //за всеки клиент в списъка с клиенти
         {
-            if (client != sender)
+            if (client != sender) //идеята е съобщението да се broadcast-не на всички клиенти без този, който го е написал/пратил
             {
                 NetworkStream stream = client.GetStream();
                 stream.Write(broadcastBuffer, 0, broadcastBuffer.Length);
