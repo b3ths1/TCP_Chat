@@ -7,28 +7,28 @@ using System.Threading;
 
 class Server
 {
-    private static readonly List<TcpClient> clients = new List<TcpClient>();
-    private const int Port = 8888;
+    private static readonly List<TcpClient> clients = new List<TcpClient>(); //list to keep track of all clients
+    private const int Port = 8888; //задава се постоянен номер на порта за сървъра
 
     static void Main()
     {
-        TcpListener server = new TcpListener(IPAddress.Any, Port);
-        server.Start();
+        TcpListener server = new TcpListener(IPAddress.Any, Port); //създава TCP listener, който следи за входящи връзки на всеки локален IP адрес и конкретен порт
+        server.Start(); //включва TCP listener-а
         Console.WriteLine($"Server started on port {Port}");
 
         while (true)
         {
-            TcpClient client = server.AcceptTcpClient();
-            clients.Add(client);
-            Thread clientThread = new Thread(HandleClient);
+            TcpClient client = server.AcceptTcpClient(); //приема нова връзка с клиент
+            clients.Add(client); //добавя клиента към списъка от горе ↑
+            Thread clientThread = new Thread(HandleClient); //създаване на thread за обработка на комуникацията със свързания клиент
             clientThread.Start(client);
         }
     }
 
-    static void HandleClient(object obj)
+    static void HandleClient(object obj) //метод, който се полза за клиента горе ↑
     {
         TcpClient tcpClient = (TcpClient)obj;
-        NetworkStream stream = tcpClient.GetStream();
+        NetworkStream stream = tcpClient.GetStream(); //Network stream - за четене и запис на данни между сървъра и клиента
 
         byte[] buffer = new byte[1024];
         int bytesRead;
