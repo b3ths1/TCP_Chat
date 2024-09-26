@@ -10,10 +10,10 @@ class Client
 
     static void Main()
     {
-        TcpClient client = new TcpClient(ServerIp, Port);
-        Console.WriteLine("Connected to server. Start chatting!");
+        TcpClient client = new TcpClient(ServerIp, Port); //Инициализира клас TcpClient като се свързва към зададения сървър и неговия порт. Може да изпраща и получава данни.
+        Console.WriteLine("Connected to server. Start chatting!"); //Принтира съобщение, за да се потвърди на клиента, че е свързан.
 
-        NetworkStream stream = client.GetStream();
+        NetworkStream stream = client.GetStream(); //Връща NetworkStream, използван за изпращане и получаване на данни.
 
         Thread receiveThread = new Thread(ReceiveMessages);
         receiveThread.Start(stream);
